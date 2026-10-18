@@ -85,6 +85,7 @@ def _select_tasks(tasks: list, runtime_config) -> list:
             return filtered
 
     limit_mode = _get_limit_mode(runtime_config)
+    tasks = tasks_for_limit_mode(tasks, limit_mode)
     if limit_mode != EvalLimitMode.SMOKE_TEST or not tasks:
         return tasks
 
@@ -94,6 +95,51 @@ def _select_tasks(tasks: list, runtime_config) -> list:
         selected_task.task_name,
     )
     return [selected_task]
+
+
+def tasks_for_limit_mode(tasks, limit_mode) -> List:
+    """Drop tasks a limit preset excludes: a ``limit_samples_map`` value of 0
+    for the active mode means "do not run this task in that preset" (the
+    agentic driver already reads 0 as n_tasks=0 and skips). A task with no
+    entry for the mode still runs in full, as before. Smoke-test and a run
+    without a preset keep every task."""
+    if limit_mode in (None, EvalLimitMode.SMOKE_TEST) or not tasks:
+        return tasks
+    kept = []
+    for t in tasks:
+        limit = (getattr(t, "limit_samples_map", None) or {}).get(limit_mode)
+        if limit is not None and not isinstance(limit, bool) and limit == 0:
+            logger.info(
+                "Skipping eval task %s: limit 0 for %s",
+                t.task_name,
+                limit_mode.name.lower().replace("_", "-"),
+            )
+        else:
+            kept.append(t)
+    return kept
+
+
+def tasks_for_modalities(tasks, supported_modalities) -> List:
+    """Drop tasks whose ``modalities`` the serving entry does not support.
+
+    A task with ``modalities=None`` is text-only and always kept. A spec that
+    declares no modalities is treated as text-only, so a vision task is
+    skipped on it rather than sent to a server that rejects images.
+    """
+    supported = set(supported_modalities or ["text"])
+    kept = []
+    for t in tasks:
+        needed = set(getattr(t, "modalities", None) or ())
+        if needed <= supported:
+            kept.append(t)
+        else:
+            logger.info(
+                "Skipping eval task %s: needs modalities %s, entry supports %s",
+                t.task_name,
+                sorted(needed),
+                sorted(supported),
+            )
+    return kept
 
 
 def get_llm_eval_tasks(model_spec, runtime_config=None, device=None) -> List:
@@ -117,6 +163,9 @@ def get_llm_eval_tasks(model_spec, runtime_config=None, device=None) -> List:
     standard = [
         t for t in eval_config.tasks if t.workflow_venv_type in _STANDARD_EVAL_VENVS
     ]
+    standard = tasks_for_modalities(
+        standard, getattr(model_spec, "supported_modalities", None)
+    )
     if not standard:
         logger.info(
             "Model %s has eval tasks but none use a standard (lm-eval/lmms-eval) "
@@ -131,4 +180,4 @@ def get_llm_eval_tasks(model_spec, runtime_config=None, device=None) -> List:
     return _select_tasks(standard, runtime_config)
 
 
-__all__ = ["get_llm_eval_tasks"]
+__all__ = ["get_llm_eval_tasks", "tasks_for_limit_mode", "tasks_for_modalities"]
