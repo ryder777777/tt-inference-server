@@ -11577,6 +11577,10 @@ _eval_config_list = [
                 # protocol published numbers use, and with thinking off the reasoning
                 # sits in the content where the parser reads the final answer line.
                 task_name="mmmu_pro_standard_cot",
+                # Informational until a GPU reference exists: lmms-eval's standard CoT protocol scores
+                # ~11 points under the model card on this checkpoint with thinking off (865 docs) and
+                # thinking on (32K budget, 173-doc slice); the full-set score is still reported.
+                priority="should",
                 workflow_venv_type=WorkflowVenvType.EVALS_VISION,
                 apply_chat_template=False,
                 use_chat_api=True,
@@ -12290,6 +12294,10 @@ _eval_config_list = [
                 # protocol published numbers use, and with thinking off the reasoning
                 # sits in the content where the parser reads the final answer line.
                 task_name="mmmu_pro_standard_cot",
+                # Informational until a GPU reference exists: lmms-eval's standard CoT protocol scores
+                # ~11 points under the model card on this checkpoint with thinking off (865 docs) and
+                # thinking on (32K budget, 173-doc slice); the full-set score is still reported.
+                priority="should",
                 workflow_venv_type=WorkflowVenvType.EVALS_VISION,
                 apply_chat_template=False,
                 use_chat_api=True,
@@ -12606,6 +12614,10 @@ _eval_config_list = [
                 # protocol published numbers use, and with thinking off the reasoning
                 # sits in the content where the parser reads the final answer line.
                 task_name="mmmu_pro_standard_cot",
+                # Informational until a GPU reference exists: lmms-eval's standard CoT protocol scores
+                # ~11 points under the model card on this checkpoint with thinking off (865 docs) and
+                # thinking on (32K budget, 173-doc slice); the full-set score is still reported.
+                priority="should",
                 workflow_venv_type=WorkflowVenvType.EVALS_VISION,
                 apply_chat_template=False,
                 use_chat_api=True,
