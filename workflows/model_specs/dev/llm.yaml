@@ -608,6 +608,7 @@ templates:
       # Scheduler tokens must match the resolved metal chunk (2048 here).
       max_context: 262144  # 256 * 1024
       default_impl: true  # validated tt-transformers entry (32 users, 256K); the gemma4_31b_qb2 class below needs an unmerged tt-metal branch
+      tensor_cache_timeout: 7200.0  # cold TT-cache conversion of the weights; the readiness backstop adds 30 min
       env_vars:
         # Text + image + video: route every Gemma4 arch name to the multimodal serving class
         # (same text path; adds the on-device vision tower and vLLM's multimodal processor).
@@ -679,6 +680,7 @@ templates:
       max_concurrency: 32
       max_context: 262144  # 256 * 1024
       default_impl: true
+      tensor_cache_timeout: 7200.0  # cold TT-cache conversion of the weights; the readiness backstop adds 30 min
       supported_modalities: [text]  # text profile: the multimodal serving config (vision override + limit-mm-per-prompt) is installed on the Blackhole QB2/Galaxy blocks only
       env_vars:
         MESH_DEVICE: "P150x8"
@@ -719,6 +721,7 @@ templates:
       max_concurrency: 128  # 32 x 4 engines
       max_context: 262144
       default_impl: true
+      tensor_cache_timeout: 7200.0  # cold TT-cache conversion of the weights; the readiness backstop adds 30 min
       env_vars:
         # Text + image + video: route every Gemma4 arch name to the multimodal serving class
         # (same text path; adds the on-device vision tower and vLLM's multimodal processor).
@@ -964,6 +967,7 @@ templates:
       max_concurrency: 32
       max_context: 262144  # 256 * 1024
       default_impl: true
+      tensor_cache_timeout: 5400.0  # cold TT-cache conversion of the weights; the readiness backstop adds 30 min
       env_vars:
         MESH_DEVICE: "P150x8"
         # 2026-09-02 prefill-config flip — THIS ENTRY ONLY (12B/P150x8):
@@ -1233,6 +1237,7 @@ templates:
       max_concurrency: 32
       max_context: 262144  # auto-bounded sliding + chunk 4096 at 256k (metal policy)
       default_impl: true
+      tensor_cache_timeout: 5400.0  # cold TT-cache conversion of the weights; the readiness backstop adds 30 min
       env_vars:
         # Text + image + video + audio: route every Gemma4 arch name to the unified multimodal
         # serving class (same text path; adds the on-device image/audio embedders and vLLM's multimodal processor).
@@ -1288,6 +1293,7 @@ templates:
       max_concurrency: 128
       max_context: 262144  # 256 * 1024 per engine (same budget as P150X8)
       default_impl: true
+      tensor_cache_timeout: 5400.0  # cold TT-cache conversion of the weights; the readiness backstop adds 30 min
       env_vars:
         # Text + image + video + audio: route every Gemma4 arch name to the unified multimodal
         # serving class (same text path; adds the on-device image/audio embedders and vLLM's multimodal processor).
@@ -2936,6 +2942,7 @@ templates:
       max_concurrency: 32
       max_context: 131072  # 128 * 1024
       default_impl: true
+      tensor_cache_timeout: 5400.0  # cold TT-cache conversion of the weights; the readiness backstop adds 30 min
       env_vars:
         # Text + image + video: route every Gemma4 arch name to the multimodal serving class
         # (same text path; adds the on-device vision tower and vLLM's multimodal processor).
@@ -2982,6 +2989,7 @@ templates:
       max_concurrency: 32
       max_context: 131072  # 128 * 1024
       default_impl: true
+      tensor_cache_timeout: 5400.0  # cold TT-cache conversion of the weights; the readiness backstop adds 30 min
       env_vars:
         # Text + image + video: route every Gemma4 arch name to the multimodal serving class
         # (same text path; adds the on-device vision tower and vLLM's multimodal processor).
@@ -3036,6 +3044,7 @@ templates:
       max_concurrency: 128  # 32 slots x 4 lanes
       max_context: 262144  # the model's max_position_embeddings; the per-lane KV pool holds ~11 users at 256K (22 at 128K)
       default_impl: true
+      tensor_cache_timeout: 5400.0  # cold TT-cache conversion of the weights; the readiness backstop adds 30 min
       env_vars:
         GEMMA4_GALAXY_FRACTURE: "1"  # one instance over the (8,4) mesh: 2-D fractured dense weights, TP=8 on axis 0
         GEMMA4_GALAXY_LANES: "1"  # lane-sharded batch over the four columns (folds the DP ranks into lanes)
