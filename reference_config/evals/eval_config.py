@@ -12614,10 +12614,10 @@ _eval_config_list = [
                 # protocol published numbers use, and with thinking off the reasoning
                 # sits in the content where the parser reads the final answer line.
                 task_name="mmmu_pro_standard_cot",
-                # Informational until a GPU reference exists: lmms-eval's standard CoT protocol scores
-                # ~11 points under the model card on this checkpoint with thinking off (865 docs) and
-                # thinking on (32K budget, 173-doc slice); the full-set score is still reported.
-                priority="should",
+                # Graded against a same-protocol GPU measurement of the ci-nightly/ci-long subset:
+                # lmms-eval's standard CoT protocol scores ~8 points under the model card on this
+                # checkpoint on a GPU too (60.8 vs 69.1), so the published score is not the reference.
+                priority="must",
                 workflow_venv_type=WorkflowVenvType.EVALS_VISION,
                 apply_chat_template=False,
                 use_chat_api=True,
@@ -12626,8 +12626,25 @@ _eval_config_list = [
                 score=EvalTaskScore(
                     published_score=69.1,
                     published_score_ref="https://ai.google.dev/gemma/docs/core/model_card_4",
+                    # Full 1730-doc set not measured on a GPU; the presets below cover the release runs.
                     gpu_reference_score=None,
                     gpu_reference_score_ref=None,
+                    # Same protocol as this entry (lmms-eval v0.4.1 mmmu_pro_standard_cot, 865-doc
+                    # subset = --limit 0.5, thinking off, greedy): RedHatAI/gemma-4-12B-it-FP8-dynamic
+                    # on vLLM 0.30.0 (RTX 4090) scored 60.81 (526/865); the 173-doc slice scored 68.2,
+                    # identical to this entry on Blackhole.
+                    mode_reference_scores={
+                        EvalLimitMode.CI_NIGHTLY: ModeReferenceScore(
+                            score=60.81,
+                            ref="same-protocol GPU run: lmms-eval v0.4.1 mmmu_pro_standard_cot, 865-doc subset, RedHatAI/gemma-4-12B-it-FP8-dynamic on vLLM 0.30.0 (RTX 4090), thinking off, greedy",
+                            tolerance=0.05,
+                        ),
+                        EvalLimitMode.CI_LONG: ModeReferenceScore(
+                            score=60.81,
+                            ref="same-protocol GPU run: lmms-eval v0.4.1 mmmu_pro_standard_cot, 865-doc subset, RedHatAI/gemma-4-12B-it-FP8-dynamic on vLLM 0.30.0 (RTX 4090), thinking off, greedy",
+                            tolerance=0.05,
+                        ),
+                    },
                     score_func=score_task_single_key,
                     score_func_kwargs={
                         "result_keys": [

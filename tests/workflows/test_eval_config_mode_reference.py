@@ -232,7 +232,20 @@ def test_gemma4_release_models_define_the_ci_long_preset():
         assert mmmu.limit_samples_map[EvalLimitMode.CI_NIGHTLY] == 0.5
         assert mmmu.limit_samples_map[EvalLimitMode.CI_LONG] == 0.5
         assert mmmu.score.published_score is not None
-        assert not mmmu.score.mode_reference_scores
+        refs = mmmu.score.mode_reference_scores
+        if model == "google/gemma-4-12B-it":
+            # Same-protocol GPU reference measured on the 865-doc subset; both presets share it
+            # and the task is gating again.
+            assert set(refs) == {EvalLimitMode.CI_NIGHTLY, EvalLimitMode.CI_LONG}
+            assert (
+                refs[EvalLimitMode.CI_NIGHTLY].score
+                == refs[EvalLimitMode.CI_LONG].score
+            )
+            assert mmmu.priority == "must"
+        else:
+            # Informational until the same-protocol GPU reference for this checkpoint lands.
+            assert not refs
+            assert mmmu.priority == "should"
         lcb = _gemma4_task(model, "livecodebench")
         assert EvalLimitMode.CI_NIGHTLY not in lcb.limit_samples_map
         assert EvalLimitMode.CI_LONG not in lcb.limit_samples_map
