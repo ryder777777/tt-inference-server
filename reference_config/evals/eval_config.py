@@ -12713,8 +12713,10 @@ _eval_config_list = [
                     # percent), so the published value is 100 - 6.9.
                     published_score=(100 - 6.9),
                     published_score_ref="https://ai.google.dev/gemma/docs/core/model_card_4",
-                    gpu_reference_score=None,
-                    gpu_reference_score_ref=None,
+                    # Same protocol as this entry (lmms-eval v0.4.1 fleurs_en, 647 utterances, thinking off,
+                    # greedy): RedHatAI/gemma-4-12B-it-FP8-dynamic on vLLM 0.30.0 (RTX 4090) scored WER 7.23.
+                    gpu_reference_score=(100 - 7.23),
+                    gpu_reference_score_ref="same-protocol GPU run: lmms-eval v0.4.1 fleurs_en, full 647-utterance set, RedHatAI/gemma-4-12B-it-FP8-dynamic on vLLM 0.30.0 (RTX 4090), thinking off, greedy, WER 7.23",
                     score_func=score_task_single_key,
                     score_func_kwargs={
                         "result_keys": [
