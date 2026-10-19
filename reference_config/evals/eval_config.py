@@ -12618,7 +12618,7 @@ _eval_config_list = [
                 task_name="mmmu_pro_standard_cot",
                 # Graded against a same-protocol GPU measurement of the ci-nightly/ci-long subset:
                 # lmms-eval's standard CoT protocol scores ~8 points under the model card on this
-                # checkpoint on a GPU too (60.8 vs 69.1), so the published score is not the reference.
+                # checkpoint on a GPU too (61.9 vs 69.1), so the published score is not the reference.
                 priority="must",
                 workflow_venv_type=WorkflowVenvType.EVALS_VISION,
                 apply_chat_template=False,
@@ -12632,18 +12632,18 @@ _eval_config_list = [
                     gpu_reference_score=None,
                     gpu_reference_score_ref=None,
                     # Same protocol as this entry (lmms-eval v0.4.1 mmmu_pro_standard_cot, 865-doc
-                    # subset = --limit 0.5, thinking off, greedy): RedHatAI/gemma-4-12B-it-FP8-dynamic
-                    # on vLLM 0.30.0 (RTX 4090) scored 60.81 (526/865); the 173-doc slice scored 68.2,
-                    # identical to this entry on Blackhole.
+                    # subset = --limit 0.5, thinking off, greedy) on the baseline bf16 checkpoint
+                    # google/gemma-4-12B-it served by vLLM 0.30.0 on an A100 80 GB: 61.85 (535/865); the
+                    # 173-doc slice scored 68.2, identical to this entry on Blackhole.
                     mode_reference_scores={
                         EvalLimitMode.CI_NIGHTLY: ModeReferenceScore(
-                            score=60.81,
-                            ref="same-protocol GPU run: lmms-eval v0.4.1 mmmu_pro_standard_cot, 865-doc subset, RedHatAI/gemma-4-12B-it-FP8-dynamic on vLLM 0.30.0 (RTX 4090), thinking off, greedy",
+                            score=61.85,
+                            ref="same-protocol GPU run: lmms-eval v0.4.1 mmmu_pro_standard_cot, 865-doc subset, baseline google/gemma-4-12B-it (bf16) on vLLM 0.30.0 (A100 80 GB), thinking off, greedy",
                             tolerance=0.05,
                         ),
                         EvalLimitMode.CI_LONG: ModeReferenceScore(
-                            score=60.81,
-                            ref="same-protocol GPU run: lmms-eval v0.4.1 mmmu_pro_standard_cot, 865-doc subset, RedHatAI/gemma-4-12B-it-FP8-dynamic on vLLM 0.30.0 (RTX 4090), thinking off, greedy",
+                            score=61.85,
+                            ref="same-protocol GPU run: lmms-eval v0.4.1 mmmu_pro_standard_cot, 865-doc subset, baseline google/gemma-4-12B-it (bf16) on vLLM 0.30.0 (A100 80 GB), thinking off, greedy",
                             tolerance=0.05,
                         ),
                     },
