@@ -608,7 +608,7 @@ templates:
       # Scheduler tokens must match the resolved metal chunk (2048 here).
       max_context: 262144  # 256 * 1024
       default_impl: true  # validated tt-transformers entry (32 users, 256K); the gemma4_31b_qb2 class below needs an unmerged tt-metal branch
-      tensor_cache_timeout: 7200.0  # cold TT-cache conversion of the weights; the readiness backstop adds 30 min
+      tensor_cache_timeout: 10800.0  # cold TT-cache conversion of the weights took 2 h 38 min on the QB2 runner; the readiness backstop adds 30 min
       env_vars:
         # Text + image + video: route every Gemma4 arch name to the multimodal serving class
         # (same text path; adds the on-device vision tower and vLLM's multimodal processor).
