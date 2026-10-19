@@ -11456,7 +11456,8 @@ _eval_config_list = [
             ),
             EvalTask(
                 task_name="terminal_bench_2",
-                priority="should",
+                # Gating: graded against the published score with the 24-task preset wave.
+                priority="must",
                 workflow_venv_type=WorkflowVenvType.EVALS_AGENTIC,
                 score=EvalTaskScore(
                     published_score=39.33,
@@ -11521,7 +11522,8 @@ _eval_config_list = [
                 # "v6" window via doc_ids (see LIVECODEBENCH_V6_DOC_IDS); the
                 # 31B measured 78.6 on BLACKHOLE_GALAXY (2026-10-13, 24 min).
                 task_name="livecodebench",
-                priority="should",
+                # Gating: graded against the published score on the full v6 window (131).
+                priority="must",
                 workflow_venv_type=WorkflowVenvType.EVALS_COMMON,
                 score=EvalTaskScore(
                     published_score=80.0,
@@ -12167,10 +12169,8 @@ _eval_config_list = [
             ),
             EvalTask(
                 task_name="terminal_bench_2",
-                # Informational: no H100 reference, and the ci-nightly subset is five tasks,
-                # which cannot grade a 14% published score; reported, never a blocker.
-                # Runner settings match the 31B entry (same QB2 / Galaxy runners).
-                priority="should",
+                # Gating: graded against the published score with the 24-task preset wave.
+                priority="must",
                 workflow_venv_type=WorkflowVenvType.EVALS_AGENTIC,
                 score=EvalTaskScore(
                     published_score=14.0,
@@ -12235,7 +12235,8 @@ _eval_config_list = [
                 # "v6" window via doc_ids (see LIVECODEBENCH_V6_DOC_IDS); same
                 # task settings as the 31B entry (78.6 on BLACKHOLE_GALAXY).
                 task_name="livecodebench",
-                priority="should",
+                # Gating: graded against the published score on the full v6 window (131).
+                priority="must",
                 workflow_venv_type=WorkflowVenvType.EVALS_COMMON,
                 score=EvalTaskScore(
                     published_score=77.1,
@@ -12494,10 +12495,8 @@ _eval_config_list = [
             ),
             EvalTask(
                 task_name="terminal_bench_2",
-                # Informational for the release entries: no H100 reference for either task and the
-                # ci-nightly subset is five tasks, which cannot grade an 18% published score;
-                # reported, never a blocker.
-                priority="should",
+                # Gating: graded against the published score with the 24-task preset wave.
+                priority="must",
                 workflow_venv_type=WorkflowVenvType.EVALS_AGENTIC,
                 score=EvalTaskScore(
                     published_score=18.0,
@@ -12558,7 +12557,8 @@ _eval_config_list = [
                 # LiveCodeBench on the chat endpoint with server-side thinking,
                 # scored on the model card's "v6" window (LIVECODEBENCH_V6_DOC_IDS).
                 task_name="livecodebench",
-                priority="should",
+                # Gating: graded against the published score on the full v6 window (131).
+                priority="must",
                 workflow_venv_type=WorkflowVenvType.EVALS_COMMON,
                 score=EvalTaskScore(
                     published_score=72.0,
@@ -12704,7 +12704,8 @@ _eval_config_list = [
                 use_chat_api=True,
                 # Only entries that declare the audio modality run it (the 12B entries).
                 modalities=["audio"],
-                priority="should",
+                # Gating: graded against the published score on the full 647-utterance set.
+                priority="must",
                 score=EvalTaskScore(
                     # WER-unit tasks are graded as 100 - WER (the task reports WER in
                     # percent), so the published value is 100 - 6.9.
