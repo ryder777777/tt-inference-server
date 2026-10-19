@@ -2942,7 +2942,7 @@ templates:
       max_concurrency: 32
       max_context: 131072  # 128 * 1024
       default_impl: true
-      tensor_cache_timeout: 5400.0  # cold TT-cache conversion of the weights; the readiness backstop adds 30 min
+      tensor_cache_timeout: 7200.0  # cold TT-cache conversion took 94 min on the QB2 runner; the readiness backstop adds 30 min
       env_vars:
         # Text + image + video: route every Gemma4 arch name to the multimodal serving class
         # (same text path; adds the on-device vision tower and vLLM's multimodal processor).

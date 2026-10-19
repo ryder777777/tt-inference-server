@@ -12144,8 +12144,10 @@ _eval_config_list = [
                 model_kwargs={
                     "max_length": 131072,
                     # Same as the 31B: long thinking generations under 32 concurrent
-                    # requests exceed lm-eval's default 1800 s HTTP timeout. Allow 2 h.
-                    "timeout": 7200,
+                    # requests exceed lm-eval's default 1800 s HTTP timeout. On the 4-chip QB2 the
+                    # thinking-mode answers take 1-2 h each at 32 users (shield run: 52 timeouts at 2 h,
+                    # 7 second retries, one sample lost -> GPQA graded incomplete), so allow 4 h.
+                    "timeout": 14400,
                 },
                 # Thinking-mode sampling (Gemma 4 model card / HF README):
                 # temperature=1.0, top_p=0.95, top_k=20.
