@@ -12476,10 +12476,11 @@ _eval_config_list = [
                     # measurement lands (CI_NIGHTLY is doc_ids 0-39, 40 samples).
                     published_score=78.8,
                     published_score_ref="https://ai.google.dev/gemma/docs/core/model_card_4",
-                    gpu_reference_score=None,
-                    # No H100 measurement for this model yet (#4090): graded against the
-                    # published score on the full set.
-                    gpu_reference_score_ref=None,
+                    # Same protocol as this entry (pinned lm-eval fork r1_gpqa_diamond, full 198, thinking on,
+                    # T=1.0/top-k 20/top-p 0.95, seed 42) on the baseline bf16 checkpoint google/gemma-4-12B-it
+                    # served by vLLM 0.30.0 on an A100 80 GB: 74.24 (Blackhole 77.8 Galaxy / 75.3 QB2).
+                    gpu_reference_score=74.24,
+                    gpu_reference_score_ref="same-protocol GPU run: lm-eval r1_gpqa_diamond (198), baseline google/gemma-4-12B-it (bf16) on vLLM 0.30.0 (A100 80 GB), thinking on, T=1.0/top-k 20/top-p 0.95, seed 42",
                     score_func=score_task_single_key,
                     score_func_kwargs={
                         "result_keys": [
