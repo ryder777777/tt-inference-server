@@ -12141,8 +12141,11 @@ _eval_config_list = [
                 score=EvalTaskScore(
                     published_score=82.3,
                     published_score_ref="https://ai.google.dev/gemma/docs/core/model_card_4",
-                    gpu_reference_score=None,
-                    gpu_reference_score_ref=None,
+                    # Same protocol as this entry (pinned lm-eval fork r1_gpqa_diamond, full 198, thinking on,
+                    # T=1.0/top-k 20/top-p 0.95, seed 42) on the baseline bf16 checkpoint google/gemma-4-26B-A4B-it
+                    # served by vLLM 0.30.0 on an A100 80 GB: 80.81.
+                    gpu_reference_score=80.81,
+                    gpu_reference_score_ref="same-protocol GPU run: lm-eval r1_gpqa_diamond (198), baseline google/gemma-4-26B-A4B-it (bf16) on vLLM 0.30.0 (A100 80 GB), thinking on, T=1.0/top-k 20/top-p 0.95, seed 42",
                     score_func=score_task_single_key,
                     score_func_kwargs={
                         "result_keys": [
