@@ -12754,10 +12754,11 @@ _eval_config_list = [
                     # percent), so the published value is 100 - 6.9.
                     published_score=(100 - 6.9),
                     published_score_ref="https://ai.google.dev/gemma/docs/core/model_card_4",
-                    # Baseline (bf16 google/gemma-4-12B-it) same-protocol GPU measurement pending; an FP8
-                    # checkpoint scored WER 7.23 but quantized checkpoints are not accepted as references.
-                    gpu_reference_score=None,
-                    gpu_reference_score_ref=None,
+                    # Same protocol as this entry (lmms-eval v0.4.1 fleurs_en, 647 utterances, thinking off,
+                    # greedy) on the baseline bf16 checkpoint google/gemma-4-12B-it served by vLLM 0.30.0 on
+                    # an A100 80 GB: WER 6.63 (Blackhole 6.66, model card 6.9).
+                    gpu_reference_score=(100 - 6.63),
+                    gpu_reference_score_ref="same-protocol GPU run: lmms-eval v0.4.1 fleurs_en, full 647-utterance set, baseline google/gemma-4-12B-it (bf16) on vLLM 0.30.0 (A100 80 GB), thinking off, greedy, WER 6.63",
                     score_func=score_task_single_key,
                     score_func_kwargs={
                         "result_keys": [
