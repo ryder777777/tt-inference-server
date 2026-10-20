@@ -12602,8 +12602,11 @@ _eval_config_list = [
                 score=EvalTaskScore(
                     published_score=72.0,
                     published_score_ref="https://ai.google.dev/gemma/docs/core/model_card_4",
-                    gpu_reference_score=None,
-                    gpu_reference_score_ref=None,
+                    # Same protocol as this entry (pinned lm-eval fork, livecodebench v6 window, the same 131
+                    # fixed problems, thinking on, T=1.0/top-k 20/top-p 0.95, seed 42) on the baseline bf16
+                    # checkpoint google/gemma-4-12B-it served by vLLM 0.30.0 on an A100 80 GB: 73.28.
+                    gpu_reference_score=73.28,
+                    gpu_reference_score_ref="same-protocol GPU run: lm-eval livecodebench (131 fixed v6 problems), baseline google/gemma-4-12B-it (bf16) on vLLM 0.30.0 (A100 80 GB), thinking on, T=1.0/top-k 20/top-p 0.95, seed 42",
                     score_func=score_task_single_key,
                     score_func_kwargs={
                         "result_keys": ["acc,none"],
