@@ -77,7 +77,7 @@ _MOCK_VLLM_SERVE_FLAGS = (
 )
 
 
-def _install_mock_vllm_serve_parser(monkeypatch, vllm):
+def _install_mock_vllm_serve_parser(monkeypatch, vllm, package="openai"):
     parser = types.SimpleNamespace(
         _actions=[
             types.SimpleNamespace(dest=dest, nargs=nargs)
@@ -87,9 +87,10 @@ def _install_mock_vllm_serve_parser(monkeypatch, vllm):
     vllm.__path__ = []
     entrypoints = types.ModuleType("vllm.entrypoints")
     entrypoints.__path__ = []
-    openai = types.ModuleType("vllm.entrypoints.openai")
+    # vLLM <= 0.28 serves the parser from entrypoints.openai, >= 0.29 from entrypoints.launchers.
+    openai = types.ModuleType(f"vllm.entrypoints.{package}")
     openai.__path__ = []
-    cli_args = types.ModuleType("vllm.entrypoints.openai.cli_args")
+    cli_args = types.ModuleType(f"vllm.entrypoints.{package}.cli_args")
     cli_args.make_arg_parser = MagicMock(return_value=parser)
     utils = types.ModuleType("vllm.utils")
     utils.__path__ = []
@@ -97,8 +98,8 @@ def _install_mock_vllm_serve_parser(monkeypatch, vllm):
     argparse_utils.FlexibleArgumentParser = MagicMock()
     for name, module in (
         ("vllm.entrypoints", entrypoints),
-        ("vllm.entrypoints.openai", openai),
-        ("vllm.entrypoints.openai.cli_args", cli_args),
+        (f"vllm.entrypoints.{package}", openai),
+        (f"vllm.entrypoints.{package}.cli_args", cli_args),
         ("vllm.utils", utils),
         ("vllm.utils.argparse_utils", argparse_utils),
     ):
@@ -759,6 +760,22 @@ def test_set_vllm_sys_argv_leaves_plain_multi_value_tokens_alone(
         ["--served-model-name", "Qwen/Qwen3.6-27B", "local-vlm"],
         {},
     ) == ["--served-model-name", "Qwen/Qwen3.6-27B", "local-vlm"]
+
+
+@pytest.mark.parametrize("package", ["openai", "launchers"])
+def test_multi_value_arg_names_found_in_either_vllm_layout(
+    monkeypatch, run_vllm_api_server_module, package
+):
+    # vLLM 0.29 moved make_arg_parser to entrypoints.launchers; serving images
+    # on either side of the move must start.
+    for name in ("vllm.entrypoints.openai", "vllm.entrypoints.openai.cli_args"):
+        monkeypatch.delitem(sys.modules, name, raising=False)
+    _install_mock_vllm_serve_parser(monkeypatch, sys.modules["vllm"], package)
+    assert run_vllm_api_server_module._vllm_multi_value_arg_names() == {
+        "served_model_name",
+        "cudagraph_capture_sizes",
+        "lora_modules",
+    }
 
 
 def test_set_vllm_sys_argv_splits_spec_default_lists_for_multi_value_flags(
