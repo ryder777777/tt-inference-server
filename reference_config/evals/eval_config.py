@@ -11579,10 +11579,10 @@ _eval_config_list = [
                 # protocol published numbers use, and with thinking off the reasoning
                 # sits in the content where the parser reads the final answer line.
                 task_name="mmmu_pro_standard_cot",
-                # Informational until a GPU reference exists: lmms-eval's standard CoT protocol scores
-                # ~11 points under the model card on this checkpoint with thinking off (865 docs) and
-                # thinking on (32K budget, 173-doc slice); the full-set score is still reported.
-                priority="should",
+                # Graded against a same-protocol baseline GPU measurement of the ci-nightly/ci-long subset:
+                # lmms-eval's standard CoT protocol scores ~12 points under the model card on this checkpoint
+                # on a GPU too (64.4 vs 76.9), so the published score is not the reference.
+                priority="must",
                 workflow_venv_type=WorkflowVenvType.EVALS_VISION,
                 apply_chat_template=False,
                 use_chat_api=True,
@@ -11591,8 +11591,25 @@ _eval_config_list = [
                 score=EvalTaskScore(
                     published_score=76.9,
                     published_score_ref="https://ai.google.dev/gemma/docs/core/model_card_4",
+                    # Full 1730-doc set not measured on a GPU; the presets below cover the release runs.
                     gpu_reference_score=None,
                     gpu_reference_score_ref=None,
+                    # Same protocol as this entry (lmms-eval v0.4.1 mmmu_pro_standard_cot, 865-doc
+                    # subset = --limit 0.5, thinking off, greedy) on the baseline bf16 checkpoint
+                    # google/gemma-4-31B-it served by vLLM 0.30.0 on an A100 80 GB: 64.39 (557/865);
+                    # the 173-doc slice scored 68.8 (this entry on Blackhole: 69.4).
+                    mode_reference_scores={
+                        EvalLimitMode.CI_NIGHTLY: ModeReferenceScore(
+                            score=64.39,
+                            ref="same-protocol GPU run: lmms-eval v0.4.1 mmmu_pro_standard_cot, 865-doc subset, baseline google/gemma-4-31B-it (bf16) on vLLM 0.30.0 (A100 80 GB), thinking off, greedy",
+                            tolerance=0.05,
+                        ),
+                        EvalLimitMode.CI_LONG: ModeReferenceScore(
+                            score=64.39,
+                            ref="same-protocol GPU run: lmms-eval v0.4.1 mmmu_pro_standard_cot, 865-doc subset, baseline google/gemma-4-31B-it (bf16) on vLLM 0.30.0 (A100 80 GB), thinking off, greedy",
+                            tolerance=0.05,
+                        ),
+                    },
                     score_func=score_task_single_key,
                     score_func_kwargs={
                         "result_keys": [
