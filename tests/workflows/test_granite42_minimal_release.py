@@ -51,6 +51,8 @@ def test_granite_release_resolves_demo_and_preserves_capacity_and_benchmarks():
 
 def test_granite_fixed_subset_evals_preserve_generation_and_published_targets():
     gpqa, terminal, swe = _eval_config_map[MODEL].tasks
+    assert gpqa.task_name == "r1_gpqa_diamond"
+    assert gpqa.score.score_func_kwargs["result_keys"] == ["exact_match,none"]
     assert gpqa.max_concurrent == 10
     assert gpqa.seed == 42
     assert gpqa.gen_kwargs["max_gen_toks"] == 32768
